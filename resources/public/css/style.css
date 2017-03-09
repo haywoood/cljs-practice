@@ -1,0 +1,90 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: #808284;
+}
+
+table {
+  border: 0;
+  border-spacing: 0;
+}
+
+thead tr th {
+  border-bottom: 2px solid #808284;
+  width: 63px;
+  padding: 8px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+td {
+  text-align: center;
+  padding: 8px;
+  border-bottom: 1px solid #e4e5e6;
+  font-size: 18px;
+}
+
+.App-container {
+  width: 507px;
+  margin: 30px auto;
+}
+
+.App-title {
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.Medal-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  margin: 0 auto;
+}
+
+.selected {
+  border-top: 2px solid #808284;
+}
+
+.Country {
+  display: flex;
+  font-weight: 600;
+  color: #808284;
+}
+
+.Medal-icon:hover {
+  cursor: pointer;
+  opacity: .8;
+}
+
+.Flag {
+  background: url("https://s3-us-west-2.amazonaws.com/reuters.medals-widget/flags.png");
+  background-repeat: no-repeat;
+  width: 28px;
+  height: 17px;
+  margin-right: 15px;
+}
+
+.th-total {
+  font-size: 18px;
+  letter-spacing: 1px;
+  font-weight: 400;
+  color: #606060;
+}
+
+.td-total {
+  font-weight: bold;
+  color: #606060;
+}
+
+.th-total:hover {
+  cursor: pointer;
+  opacity: .8;
+}
+
+.Loading {
+  font-size: 30px;
+  margin: 300 auto;
+  width: 300px;
+  text-align: center;
+}

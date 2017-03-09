@@ -1,0 +1,5 @@
+resources/public/js/compiled/
+.DS_Store
+target/
+.nrepl-port
+figwheel_server.log
