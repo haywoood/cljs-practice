@@ -1,3 +1,8 @@
+html, body, #app {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -24,9 +29,15 @@ td {
   font-size: 18px;
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .App-container {
   width: 507px;
-  margin: 30px auto;
+  margin-top: 30px;
 }
 
 .App-title {
@@ -50,6 +61,8 @@ td {
   display: flex;
   font-weight: 600;
   color: #808284;
+  width: 200px;
+  line-height: .9em;
 }
 
 .Medal-icon:hover {
@@ -82,9 +95,16 @@ td {
   opacity: .8;
 }
 
-.Loading {
-  font-size: 30px;
-  margin: 300 auto;
-  width: 300px;
-  text-align: center;
+.Loading, .Error {
+  font-size: 40px;
+  letter-spacing: 2px;
+  font-weight: 100;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+}
+
+.Error {
+  color: #ff004e;
 }

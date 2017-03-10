@@ -9,14 +9,12 @@
 
 (defn get-codes [countries]
   (->> countries
-       (mapv :code)
+       (map :code)
        sort
        (into [])))
 
 (defn get-sprite-offset [country codes]
   (* (.indexOf codes country) -17))
-
-(def get-country-data (juxt :code :gold :silver :bronze :total))
 
 
 ;;; Initial App State
@@ -24,7 +22,7 @@
 (def init-db {:loading? true
               :error? false
               :medal-counts []
-              :sort-by :gold})
+              :sort-by nil})
 
 
 ;;; Sorting Logic
@@ -75,13 +73,13 @@
 
 (rf/reg-event-db
   :initialize
-  (fn [db _]
+  (fn [db [_ sort-val]]
     (GET "https://s3-us-west-2.amazonaws.com/reuters.medals-widget/medals.json"
          {:response-format :json
           :keywords? true
           :handler #(rf/dispatch [:process-medals-data %1])
           :error-handler #(rf/dispatch [:process-medals-data-error %1])})
-    init-db))
+    (assoc init-db :sort-by sort-val)))
 
 
 ;;; Subscriptions
@@ -106,61 +104,71 @@
 ;;; Components
 
 (defn flag [country]
-  (let [codes @(rf/subscribe [:get-alphabetical-codes])
-        y-offset (get-sprite-offset country codes)]
-    [:div {:style {:backgroundPositionY y-offset} :className "Flag"}]))
+  (let [codes (rf/subscribe [:get-alphabetical-codes])
+        y-offset (get-sprite-offset country @codes)]
+    [:div.Flag {:style {:background-position-y y-offset}}]))
 
 (defn medal-icon [color selected-color handler]
-  [:div {:onClick handler
-         :className "Medal-icon"
-         :style {:backgroundColor color}}])
+  [:div.Medal-icon {:on-click handler
+                    :style {:background-color color}}])
 
-(defn table-row [data i]
-  (let [[code gold silver bronze total] (get-country-data data)]
-    [:tr {:key code}
-     [:td nil i]
-     [:td {:style {:width 300}}
-      [:div {:className "Country"}
-        (flag code) code]]
+(defn table-row [{:keys [medal-count position]}]
+  (let [{:keys [code gold silver bronze total]} medal-count]
+    [:tr nil
+     [:td nil position]
+     [:td [:div.Country [flag code] code]]
      [:td nil gold]
      [:td nil silver]
      [:td nil bronze]
-     [:td {:className "td-total"} total]]))
+     [:td.td-total total]]))
 
 (defn table-heading []
   (let [sort-val @(rf/subscribe [:sort-by])]
     [:thead nil
       [:tr nil
-        [:th {:colSpan 2}]
-        [:th {:className (if (= sort-val :gold) "selected")}
-             (medal-icon "gold" sort-val #(rf/dispatch [:sort-by :gold]))]
-        [:th {:className (if (= sort-val :silver) "selected")}
-             (medal-icon "silver" sort-val #(rf/dispatch [:sort-by :silver]))]
-        [:th {:className (if (= sort-val :bronze) "selected")}
-             (medal-icon "brown" sort-val #(rf/dispatch [:sort-by :bronze]))]
-        [:th {:className (str "th-total" (if (= sort-val :total) " selected"))
-              :onClick #(rf/dispatch [:sort-by :total])} "TOTAL"]]]))
+        [:th {:col-span 2}]
+        [:th {:class-name (if (= sort-val :gold) "selected")}
+             [medal-icon "#fad033" sort-val #(rf/dispatch [:sort-by :gold])]]
+        [:th {:class-name (if (= sort-val :silver) "selected")}
+             [medal-icon "#9aa6ad" sort-val #(rf/dispatch [:sort-by :silver])]]
+        [:th {:class-name (if (= sort-val :bronze) "selected")}
+             [medal-icon "#875124" sort-val #(rf/dispatch [:sort-by :bronze])]]
+        [:th {:class-name (str "th-total" (if (= sort-val :total) " selected"))
+              :on-click #(rf/dispatch [:sort-by :total])} "TOTAL"]]]))
+
+(defn medal-table []
+  (let [medal-counts (rf/subscribe [:medal-counts])]
+    [:div.App-container
+      [:div.App-title "MEDAL COUNT"]
+      [:table nil
+        [table-heading]
+        [:tbody nil
+          (map (fn [medal-count i] [table-row {:key (:code medal-count)
+                                                :medal-count medal-count
+                                                :position (inc i)}])
+               @medal-counts
+               (range))]]]))
 
 (defn medal-count []
-  (let [loading? @(rf/subscribe [:loading?])
-        error? @(rf/subscribe [:error?])
-        medal-counts @(rf/subscribe [:medal-counts])]
-    (cond loading? [:div {:className "Loading"} "Loading..."]
-          error? [:div {:className "Loading"} "The request has failed."]
-          :else
-            [:div {:className "App-container"}
-              [:div {:className "App-title"} "MEDAL COUNT"]
-              [:table nil
-                (table-heading)
-                [:tbody nil
-                  (doall
-                   (map (fn [count i] (table-row count (inc i)))
-                        medal-counts
-                        (range)))]]])))
+  (let [loading? (rf/subscribe [:loading?])
+        error? (rf/subscribe [:error?])]
+    (cond @loading? [:div.Loading "Loading..."]
+          @error? [:div.Error "The request has failed."]
+          :else [medal-table])))
 
 
 ;;; App Initialization
 
-(do
-  (rf/dispatch-sync [:initialize])
-  (r/render [medal-count] (dom/getElement "app")))
+(defn ^:export run
+  ([mount-id] (run mount-id "gold"))
+  ([mount-id sort-string]
+   (let [sort-key (keyword sort-string)
+         valid-key? (contains? #{:gold :silver :bronze :total} sort-key)]
+     (if valid-key?
+       (do
+        (rf/dispatch-sync [:initialize (keyword sort-string)])
+        (r/render [medal-count] (dom/getElement mount-id)))
+       (throw (js/Error. (str "Sort option: " sort-string " is invalid, "
+                              "please choose one of the following: "
+                              "gold, silver, bronze, total")))))))
+
