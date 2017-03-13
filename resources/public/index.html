@@ -4,15 +4,27 @@
     <title>Medal Count</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/normalize.css" rel="stylesheet" type="text/css">
-    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/medal-count.css" rel="stylesheet" type="text/css">
+    <style>
+     html, body {
+       width: 100%;
+       height: 100%;
+     }
+
+     body {
+       box-sizing: border-box;
+       padding: 25px 50px;
+       margin: 0;
+     }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+
+    <div id="MedalCount-mountElement"></div>
 
     <script src="js/compiled/medal_count.js" type="text/javascript"></script>
     <script>
-     medal_count.core.run("app")
+     medal_count.core.run("MedalCount-mountElement")
     </script>
   </body>
 </html>

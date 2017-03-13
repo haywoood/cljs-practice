@@ -1,76 +1,77 @@
-html, body, #app {
-  height: 100%;
+.MedalCount-table,
+.MedalCount-wrap {
   width: 100%;
 }
 
-body {
+.MedalCount-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
   color: #808284;
 }
 
-table {
+.MedalCount-table {
   border: 0;
   border-spacing: 0;
 }
 
-thead tr th {
+.MedalCount-th {
+  border-top: 2px solid transparent;
   border-bottom: 2px solid #808284;
-  width: 63px;
   padding: 8px;
   text-align: center;
   box-sizing: border-box;
 }
 
-td {
+.MedalCount-th.--selected {
+  border-top: 2px solid #808284;
+}
+
+.MedalCount-td {
   text-align: center;
   padding: 8px;
+  box-sizing: border-box;
   border-bottom: 1px solid #e4e5e6;
   font-size: 18px;
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.MedalCount-td.--total {
+  font-weight: bold;
+  color: #606060;
 }
 
-.App-container {
-  width: 507px;
-  margin-top: 30px;
-}
-
-.App-title {
+.MedalCount-title {
   font-size: 26px;
   font-weight: 300;
   letter-spacing: 1px;
 }
 
-.Medal-icon {
+.MedalCount-icon {
   width: 28px;
   height: 28px;
   border-radius: 14px;
-  margin: 0 auto;
+  margin: 0 10px;
 }
 
-.selected {
-  border-top: 2px solid #808284;
-}
-
-.Country {
-  display: flex;
-  font-weight: 600;
-  color: #808284;
-  width: 200px;
-  line-height: .9em;
-}
-
-.Medal-icon:hover {
+.MedalCount-icon:hover {
   cursor: pointer;
   opacity: .8;
 }
 
-.Flag {
+.MedalCount-countryCode {
+  display: flex;
+  font-weight: 600;
+  color: #808284;
+  line-height: .9em;
+}
+
+.MedalCount-td.--countryCode {
+  width: 99%;
+}
+
+.MedalCount-flag {
   background: url("https://s3-us-west-2.amazonaws.com/reuters.medals-widget/flags.png");
   background-repeat: no-repeat;
   width: 28px;
@@ -78,24 +79,19 @@ td {
   margin-right: 15px;
 }
 
-.th-total {
+.MedalCount-totalHeaderCell {
   font-size: 18px;
   letter-spacing: 1px;
   font-weight: 400;
   color: #606060;
 }
 
-.td-total {
-  font-weight: bold;
-  color: #606060;
-}
-
-.th-total:hover {
+.MedalCount-totalHeaderCell:hover {
   cursor: pointer;
   opacity: .8;
 }
 
-.Loading, .Error {
+.MedalCount-loading, .MedalCount-error {
   font-size: 40px;
   letter-spacing: 2px;
   font-weight: 100;
@@ -105,6 +101,8 @@ td {
   justify-content: center;
 }
 
-.Error {
+.MedalCount-error {
   color: #ff004e;
 }
+
+.u-fullWidth { width: 100%; }
